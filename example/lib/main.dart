@@ -9,7 +9,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late AzureNotificationhubsFlutter _anh;
+  final _anh = AzureNotificationhubsFlutter();
 
   @override
   void initState() {
@@ -21,8 +21,8 @@ class _MyAppState extends State<MyApp> {
           context: context,
           builder: (context) => AlertDialog(
             content: ListTile(
-              title: Text(notification?['data']['title']),
-              subtitle: Text(notification?['data']['body']),
+              title: Text(notification['data']['title']),
+              subtitle: Text(notification['data']['body']),
             ),
             actions: <Widget>[
               TextButton(
