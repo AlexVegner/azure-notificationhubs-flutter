@@ -18,6 +18,6 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    expect(AzureNotificationhubsFlutter.platformVersion, '42');
+    expect(AzureNotificationhubsFlutter.platformVersion, 42);
   });
 }
