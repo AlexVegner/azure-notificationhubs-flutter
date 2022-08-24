@@ -48,16 +48,19 @@
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
-    NSLog(@"Received remote (silent) notification");
+    //    NSLog(@"didReceiveRemoteNotification");
+    
     if (_resumingFromBackground) {
         [_channel invokeMethod:@"onResume" arguments:userInfo];
     } else {
         [_channel invokeMethod:@"onMessage" arguments:userInfo];
     }
-    completionHandler(UIBackgroundFetchResultNoData);
+    completionHandler(UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
 }
 
 - (void) application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    //    NSLog(@"didRegisterForRemoteNotificationsWithDeviceToken");
+    
     NSString *token = [self stringWithDeviceToken:deviceToken];
     NSString *deviceTag = [@"device:" stringByAppendingString:token];
     NSArray *tags = @[deviceTag];
@@ -72,22 +75,18 @@
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
-    NSLog(@"willPresentNotification");
-    if (_resumingFromBackground) {
-        [_channel invokeMethod:@"onResume" arguments:notification.request.content.userInfo];
-    } else {
-        [_channel invokeMethod:@"onMessage" arguments:notification.request.content.userInfo];
-    }
+    //    NSLog(@"willPresentNotification");
+    
+    [_channel invokeMethod:@"onMessage" arguments:notification.request.content.userInfo];
+    
     completionHandler(UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
-    NSLog(@"didReceiveNotificationResponse");
-    if (_resumingFromBackground) {
-        [_channel invokeMethod:@"onResume" arguments:response.notification.request.content.userInfo];
-    } else {
-        [_channel invokeMethod:@"onMessage" arguments:response.notification.request.content.userInfo];
-    }
+    //    NSLog(@"didReceiveNotificationResponse");
+    
+    [_channel invokeMethod:@"onResume" arguments:response.notification.request.content.userInfo];
+    
     completionHandler();
 }
 
@@ -126,8 +125,8 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     _resumingFromBackground = NO;
-    application.applicationIconBadgeNumber = 1;
-    application.applicationIconBadgeNumber = 0;
+    //    application.applicationIconBadgeNumber = 1;
+    //    application.applicationIconBadgeNumber = 0;
 }
 
 - (NSString *)stringWithDeviceToken:(NSData *)deviceToken {
